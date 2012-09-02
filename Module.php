@@ -37,4 +37,9 @@ class Module
             aop_add_around($pointcut, $advice);
         }
     }
+    
+    public function getConfig()
+    {
+        return include __DIR__ . '/config/module.config.php';
+    }
 }
