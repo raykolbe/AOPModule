@@ -10,7 +10,7 @@ class Module
     public function __construct()
     {
         $manager = StaticEventManager::getInstance();
-        $manager->attach('application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'registerAdvices'), PHP_INT_MAX);
+        $manager->attach('Zend\Mvc\Application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'registerAdvices'), PHP_INT_MAX);
     }
     
     public function registerAdvices(MvcEvent $event)
