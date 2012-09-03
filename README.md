@@ -1,9 +1,9 @@
 AOPModule
 ============
 
-# An Aspect Oriented Programming (AOP) Module for Zend Framework 2.
+An Aspect Oriented Programming (AOP) Module for Zend Framework 2.
 
-The AOP module wraps the PHP PECL extension [AOP](https://github.com/AOP-PHP/AOP) into Zend Framework 2. If you're not familiar with AOP, take some time to read up on [AspectJ](http://www.eclipse.org/aspectj/doc/next/progguide/index.html) (the Java implementation) and the [PHP PECL extension AOP documentation](https://github.com/AOP-PHP/AOP).
+This AOP module wraps the PHP PECL extension [AOP](https://github.com/AOP-PHP/AOP) into Zend Framework 2. If you're not familiar with AOP, take some time to read up on [AspectJ](http://www.eclipse.org/aspectj/doc/next/progguide/index.html) (the Java implementation) and the [PHP PECL extension AOP documentation](https://github.com/AOP-PHP/AOP).
 
 ## Requirements
   - [Zend Framework 2](http://www.github.com/zendframework/zf2)
@@ -20,8 +20,9 @@ Installation of AOPModule uses PHP Composer. For more information about PHP Comp
 
      ```json
      {
+         "minimum-stability" : "dev",
          "require": {
-             "dino/AOPModule": "dev-master"
+             "dino/aop-module": "dev-master"
          }
      }
      ```
@@ -31,7 +32,7 @@ Installation of AOPModule uses PHP Composer. For more information about PHP Comp
   5. open `my/project/directory/config/application.config.php` and add the following key to your `modules`: 
 
      ```php
-     'AOPModule',
+     'AOP',
      ```
 
 #### Configuration Options
@@ -89,3 +90,5 @@ class Security
 ```
 
 Note: If your aspect implements `Zend\ServiceManager\ServiceLocatorAwareInterface`, the ServiceManager instances on Application will be injected.
+
+Note: This module is set up as soon as ZF2 allows (MVC Bootstrap) and at the highest priority on the event stack.
