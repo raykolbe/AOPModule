@@ -2,8 +2,6 @@
 
 return array(
     'aop' => array(
-        'before' => array(),
-        'after'  => array(),
-        'around' => array()
+        'aspect_class_paths' => array()
     )
 );

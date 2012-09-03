@@ -4,37 +4,58 @@ namespace AOP;
 
 use Zend\Mvc\MvcEvent;
 use Zend\EventManager\StaticEventManager;
+use Zend\File\ClassFileLocator;
+use Doctrine\Common\Annotations;
 
 class Module
 {
     public function __construct()
     {
         $manager = StaticEventManager::getInstance();
-        $manager->attach('Zend\Mvc\Application', MvcEvent::EVENT_BOOTSTRAP, array($this, 'registerAdvices'), PHP_INT_MAX);
+        $manager->attach(
+            'Zend\Mvc\Application',
+             MvcEvent::EVENT_BOOTSTRAP,
+             array($this, 'registerAspects'),
+             PHP_INT_MAX
+        );
     }
     
-    public function registerAdvices(MvcEvent $event)
+    public function registerAspects(MvcEvent $event)
     {
         $application = $event->getApplication();
-        $configuration = $application->getConfig();
+        $config = $application->getConfig();
         
-        $beforeJoins = isset($configuration['aop']['before']) ? $configuration['aop']['before'] : array();
-        $afterJoins = isset($configuration['aop']['after']) ? $configuration['aop']['after'] : array();
-        $aroundJoins = isset($configuration['aop']['around']) ? $configuration['aop']['around'] : array();
+        Annotations\AnnotationRegistry::registerAutoloadNamespace(__NAMESPACE__ . '\Annotation');
         
-        foreach ($beforeJoins as $pointcut => $advice) {
-            // @todo Make sure advice is callable
-            aop_add_before($pointcut, $advice);
-        }
-        
-        foreach ($afterJoins as $pointcut => $advice) {
-            // @todo Make sure advice is callable
-            aop_add_after($pointcut, $advice);
-        }
-        
-        foreach ($aroundJoins as $pointcut => $advice) {
-            // @todo Make sure advice is callable
-            aop_add_around($pointcut, $advice);
+        foreach ($config['aop']['aspect_class_paths'] as $path) {
+            foreach (new ClassFileLocator($path) as $classInfoFile) {
+                foreach ($classInfoFile->getClasses() as $class) {
+                    $aspect = new $class;
+                    $reader = new Annotations\AnnotationReader();
+                    $reflection = new \ReflectionClass($aspect);
+                    
+                    foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                        $pointcut = $reader->getMethodAnnotation($method, 'AOP\Annotation\Pointcut');
+                        $advice = $method->getName();
+                        
+                        switch (get_class($pointcut)) {
+                            case 'AOP\Annotation\PointcutBefore' :
+                                aop_add_before($pointcut->rule, array($aspect, $advice));
+                                break;
+                            case 'AOP\Annotation\PointcutAfter' :
+                                aop_add_after($pointcut->rule, array($aspect, $advice));
+                                break;
+                            case 'AOP\Annotation\PointcutAround' :
+                                aop_add_around($pointcut->rule, array($aspect, $advice));
+                                break;
+                        }
+                        
+                        if ($aspect instanceof \Zend\ServiceManager\ServiceLocatorAwareInterface) {
+                            $aspect->setServiceLocator($application->getServiceManager());
+                        }
+                    }
+                }
+            }
         }
     }
     
