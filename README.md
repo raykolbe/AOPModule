@@ -62,7 +62,13 @@ use AOP\Annotation\Pointcut;
 class Security
 {
     /**
-     * @Pointcut(rule="before Application\Controller\IndexController->*Action()")
+     * The pointcut rule can be a standalone rule or an array of rules,
+     * denoted by the curly braces.
+     * 
+     * @Pointcut(rule={
+     *     "before Application\Controller\IndexController->*Action()",
+     *     "before Application\Controller\AdminController->*Action()"
+     * })
      */
     public function checkActionPrecondition(\AOPTriggeredJoinPoint $triggeredJoinPoint)
     {
@@ -70,6 +76,8 @@ class Security
     }
 
     /**
+     * Take note that the rule is not in array notation.
+     * 
      * @Pointcut(rule="before Application\Controller\IndexController->*Action()")
      */
     public function checkFooBarPrecondition(\AOPTriggeredJoinPoint $triggeredJoinPoint)
@@ -82,12 +90,21 @@ class Security
      */
     public function logActionDispatched(\AOPTriggeredJoinPoint $triggeredJoinPoint)
     {
-        // If ServiceLocatorAwareInterface was implemented, we could call something like:
-        // $this->getServiceLocator()->get('logger')->info('We dispatched an action.');
+        /**
+         * If ServiceLocatorAwareInterface was implemented, we could call:
+         *
+         * $this->getServiceLocator()
+         *      ->get('logger')
+         *      ->info('We dispatched an action.');
+         */
+
         error_log("My logging advice!");
     }
 }
 ```
+
+## Rule syntax
+The syntax follows that of the AOP PECL extension with the exception of the prepended "before", "after", or "around" keywords to the rule.
 
 ## Notes
   - If your aspect implements `Zend\ServiceManager\ServiceLocatorAwareInterface`, the ServiceManager instance on Application will be injected.

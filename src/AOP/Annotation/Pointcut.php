@@ -8,5 +8,6 @@ namespace AOP\Annotation;
  */
 class Pointcut
 {
-    public $rule = null;
+    /** @var array */
+    public $rule = array();
 }

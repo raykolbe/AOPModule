@@ -35,21 +35,23 @@ class Module
                     $reflection = new \ReflectionClass($aspect);
                     
                     foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
-                        $pointcut = $reader->getMethodAnnotation($method, 'AOP\Annotation\Pointcut');
+                        $annotation = $reader->getMethodAnnotation($method, 'AOP\Annotation\Pointcut');
                         $advice = $method->getName();
+                        $pointcuts = $annotation->rule;
                         
-                        list($trigger, $rule) = sscanf($pointcut->rule, "%s %s");
-                        
-                        switch ($trigger) {
-                            case 'before' :
-                                aop_add_before($rule, array($aspect, $advice));
-                                break;
-                            case 'after' :
-                                aop_add_after($rule, array($aspect, $advice));
-                                break;
-                            case 'around' :
-                                aop_add_around($rule, array($aspect, $advice));
-                                break;
+                        foreach ($pointcuts as $pointcut) {
+                            list($trigger, $rule) = sscanf($pointcut, "%s %s");
+                            switch ($trigger) {
+                                case 'before' :
+                                    aop_add_before($rule, array($aspect, $advice));
+                                    break;
+                                case 'after' :
+                                    aop_add_after($rule, array($aspect, $advice));
+                                    break;
+                                case 'around' :
+                                    aop_add_around($rule, array($aspect, $advice));
+                                    break;
+                            }
                         }
                         
                         if ($aspect instanceof \Zend\ServiceManager\ServiceLocatorAwareInterface) {
