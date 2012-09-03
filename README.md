@@ -57,30 +57,30 @@ An aspect looks like this:
 
 namespace Application\Aspect;
 
-use AOP\Annotation as Pointcut;
+use AOP\Annotation\Pointcut;
 
 class Security
 {
     /**
-     * @Pointcut\PointcutBefore(rule="Application\Controller\IndexController->*Action()")
+     * @Pointcut(rule="before Application\Controller\IndexController->*Action()")
      */
-    public function checkActionPrecondition(\AOPTriggeredJoinPoint $target)
+    public function checkActionPrecondition(\AOPTriggeredJoinPoint $triggeredJoinPoint)
     {
         error_log("Check Access Precondition!");
     }
 
     /**
-     * @Pointcut\PointcutBefore(rule="Application\Controller\IndexController->*Action()")
+     * @Pointcut(rule="before Application\Controller\IndexController->*Action()")
      */
-    public function checkFooBarPrecondition(\AOPTriggeredJoinPoint $target)
+    public function checkFooBarPrecondition(\AOPTriggeredJoinPoint $triggeredJoinPoint)
     {
         error_log("Check Foo Bar Precondition!");
     }
 
     /**
-     * @Pointcut\PointcutAfter(rule="Application\Controller\IndexController->*Action()")
+     * @Pointcut(rule="after Application\Controller\IndexController->*Action()")
      */
-    public function logActionDispatched(\AOPTriggeredJoinPoint $target)
+    public function logActionDispatched(\AOPTriggeredJoinPoint $triggeredJoinPoint)
     {
         // If ServiceLocatorAwareInterface was implemented, we could call something like:
         // $this->getServiceLocator()->get('logger')->info('We dispatched an action.');
@@ -89,6 +89,7 @@ class Security
 }
 ```
 
-Note: If your aspect implements `Zend\ServiceManager\ServiceLocatorAwareInterface`, the ServiceManager instance on Application will be injected.
-
-Note: This module is set up as soon as ZF2 allows (MVC Bootstrap) and at the highest priority on the event stack.
+## Notes
+  - If your aspect implements `Zend\ServiceManager\ServiceLocatorAwareInterface`, the ServiceManager instance on Application will be injected.
+  - This module is set up as soon as ZF2 allows (MVC Bootstrap) and at the highest priority on the event stack.
+  - v0.1.0 of AOP is currently supported. Future releases promise a more robust lexicon.

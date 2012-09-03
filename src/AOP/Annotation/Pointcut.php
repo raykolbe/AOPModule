@@ -2,7 +2,11 @@
 
 namespace AOP\Annotation;
 
-abstract class Pointcut
+/**
+ * @Annotation
+ * @Target("METHOD")
+ */
+class Pointcut
 {
     public $rule = null;
 }

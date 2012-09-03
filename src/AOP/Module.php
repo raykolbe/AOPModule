@@ -38,15 +38,17 @@ class Module
                         $pointcut = $reader->getMethodAnnotation($method, 'AOP\Annotation\Pointcut');
                         $advice = $method->getName();
                         
-                        switch (get_class($pointcut)) {
-                            case 'AOP\Annotation\PointcutBefore' :
-                                aop_add_before($pointcut->rule, array($aspect, $advice));
+                        list($trigger, $rule) = sscanf($pointcut->rule, "%s %s");
+                        
+                        switch ($trigger) {
+                            case 'before' :
+                                aop_add_before($rule, array($aspect, $advice));
                                 break;
-                            case 'AOP\Annotation\PointcutAfter' :
-                                aop_add_after($pointcut->rule, array($aspect, $advice));
+                            case 'after' :
+                                aop_add_after($rule, array($aspect, $advice));
                                 break;
-                            case 'AOP\Annotation\PointcutAround' :
-                                aop_add_around($pointcut->rule, array($aspect, $advice));
+                            case 'around' :
+                                aop_add_around($rule, array($aspect, $advice));
                                 break;
                         }
                         
