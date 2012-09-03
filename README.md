@@ -89,6 +89,6 @@ class Security
 }
 ```
 
-Note: If your aspect implements `Zend\ServiceManager\ServiceLocatorAwareInterface`, the ServiceManager instances on Application will be injected.
+Note: If your aspect implements `Zend\ServiceManager\ServiceLocatorAwareInterface`, the ServiceManager instance on Application will be injected.
 
 Note: This module is set up as soon as ZF2 allows (MVC Bootstrap) and at the highest priority on the event stack.
