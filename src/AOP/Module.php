@@ -36,6 +36,11 @@ class Module
                     
                     foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
                         $annotation = $reader->getMethodAnnotation($method, 'AOP\Annotation\Pointcut');
+                        
+                        if (! $annotation) {
+                            continue;
+                        }
+                        
                         $advice = $method->getName();
                         $pointcuts = $annotation->rule;
                         
